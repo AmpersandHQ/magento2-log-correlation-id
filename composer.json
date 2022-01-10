@@ -1,0 +1,64 @@
+{
+    "name": "ampersand/magento2-log-correlation-id",
+    "description": "Magento 2 correlation id for requests and logs",
+    "type": "magento2-module",
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "magento/magento-composer-installer": true
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo-magento-mirror.fooman.co.nz/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "magento/framework": "*"
+    },
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "Ampersand\\LogCorrelationId\\" : "src"
+        }
+    },
+    "scripts": {
+        "pre-update-cmd": "mkdir -p app/etc",
+        "post-install-cmd": "([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)",
+        "post-update-cmd": "rm app/etc/*; rmdir app/etc app; ([ $COMPOSER_DEV_MODE -eq 0 ] || vendor/bin/phpcs --config-set installed_paths ../../magento/magento-coding-standard/)",
+        "fix": "vendor/bin/php-cs-fixer fix --diff",
+        "test:static": "vendor/bin/phpstan analyse --no-interaction --no-progress && vendor/bin/phpcs --standard=Magento2 src -s",
+        "test:lint": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "test:unit": "vendor/bin/phpunit --debug",
+        "test-static-analysis": [
+            "@test:static",
+            "@test:lint"
+        ],
+        "test": [
+            "@test-static-analysis",
+            "@test:unit"
+        ]
+    },
+    "require-dev": {
+        "ampersand/travis-vanilla-magento": "^1.1",
+        "bitexpert/phpstan-magento": "^0.9",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "magento/magento-coding-standard": "^15",
+        "magento/magento2-base": "*",
+        "phpstan/phpstan": "^0.12.80",
+        "phpunit/phpunit": "^9.5",
+        "rector/rector": "^0.11.21, !=0.11.34, !=0.11.33"
+    },
+    "extra": {
+        "magento-deploy-ignore": {
+            "*": [
+                "/"
+            ]
+        }
+    }
+}

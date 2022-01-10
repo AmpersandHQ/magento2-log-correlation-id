@@ -1,0 +1,12 @@
+includes:
+    - %currentWorkingDirectory%/vendor/bitexpert/phpstan-magento/extension.neon
+parameters:
+    paths:
+        - %currentWorkingDirectory%/src
+    excludes_analyse:
+        - *Test*
+        - *tests*
+    level: max
+    bootstrapFiles:
+        - %currentWorkingDirectory%/vendor/bitexpert/phpstan-magento/autoload.php
+    ignoreErrors:

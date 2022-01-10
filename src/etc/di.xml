@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- So that the key in the log files can be amended -->
+    <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
+        <arguments>
+            <argument name="identifierKey" xsi:type="string">amp_correlation_id</argument>
+        </arguments>
+    </type>
+
+    <!-- Attach amp_correlation_id to all monolog entries -->
+    <type name="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Attach X-Log-Correlation-Id header to most http responses -->
+    <type name="Magento\Framework\App\Response\HeaderManager">
+        <arguments>
+            <argument name="headerProviderList" xsi:type="array">
+                <item name="x-log-correlation-id" xsi:type="object">Ampersand\LogCorrelationId\HttpResponse\HeaderProvider\LogCorrelationIdHeader</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Attach X-Log-Correlation-Id to webapi responses -->
+    <type name="Magento\Framework\HTTP\PhpEnvironment\Response">
+        <plugin name="ampersand_log_correlation_id_response_plugin" type="Ampersand\LogCorrelationId\Plugin\AddToWebApiResponse" sortOrder="1" disabled="false"/>
+    </type>
+</config>

@@ -1,0 +1,52 @@
+language: php
+php:
+    - 7.4
+git:
+  depth: false
+dist: xenial
+env:
+    - TEST_GROUP=magento_latest
+    - TEST_GROUP=magento_23
+addons:
+    apt:
+        packages:
+            - postfix
+            - apache2
+            - libapache2-mod-fastcgi
+services:
+    - mysql
+cache:
+    apt: true
+    directories:
+        - $HOME/.composer/cache
+        - $HOME/bin
+
+before_install:
+    - if [ ! "$TRAVIS_PULL_REQUEST" = "false" ]; then git branch; git branch -D "$TRAVIS_BRANCH" || true; git checkout -b "$TRAVIS_BRANCH"; fi
+    - phpenv config-rm xdebug.ini || true
+    - composer self-update --2
+install:
+    - export COMPOSER_MEMORY_LIMIT=-1
+    - export COMPOSER_PACKAGE_NAME=$(composer config name)
+    - composer install --no-interaction
+script:
+    - composer run test-static-analysis
+    - composer run test:unit
+    # Install magento
+    - if [[ $TEST_GROUP = magento_23 ]];     then NAME=ampmodule FULL_INSTALL=0 VERSION=2.3.7-p2    . ./vendor/bin/travis-install-magento.sh; fi
+    - if [[ $TEST_GROUP = magento_latest ]]; then NAME=ampmodule FULL_INSTALL=0                     . ./vendor/bin/travis-install-magento.sh; fi
+    # Install this module
+    - cd vendor/ampersand/travis-vanilla-magento/instances/ampmodule
+    - composer config repo.ampmodule git "$TRAVIS_BUILD_DIR"
+    - composer require -vvv "$COMPOSER_PACKAGE_NAME:dev-$TRAVIS_BRANCH" || composer require -vvv "$COMPOSER_PACKAGE_NAME:$TRAVIS_BRANCH"
+    # Configure for integration tests
+    - mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; DROP DATABASE IF EXISTS magento_integration_tests; CREATE DATABASE magento_integration_tests;'
+    - cp dev/tests/integration/etc/install-config-mysql.travis-no-rabbitmq.php.dist dev/tests/integration/etc/install-config-mysql.php
+    - php $TRAVIS_BUILD_DIR/dev/prepare_phpunit_config.php $TRAVIS_BUILD_DIR/vendor/ampersand/travis-vanilla-magento/instances/ampmodule
+    - vendor/bin/phpunit -c $(pwd)/dev/tests/integration/phpunit.xml.dist --testsuite Integration --debug
+after_failure:
+    - test -d ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/report/ && for r in ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/report/*; do cat $r; done
+    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log
+    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log && cat ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log
+    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log
+    - sleep 10;
