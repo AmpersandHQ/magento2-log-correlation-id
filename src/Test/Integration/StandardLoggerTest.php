@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Test\Integration;
 
 use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Magento\Framework\Logger\Handler\System as SystemLogHandler;
 use Magento\Framework\Logger\Monolog;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
@@ -12,17 +13,22 @@ class StandardLoggerTest extends TestCase
     /** @var Monolog */
     private $logger;
     /** @var string */
-    private $logDir;
+    private $logDir = '';
 
     protected function setUp(): void
     {
         /** @var \Magento\TestFramework\ObjectManager $objectManager */
         $objectManager = Bootstrap::getObjectManager();
         $this->logger = $objectManager->get(MonoLog::class);
-        $this->logDir = Bootstrap::getInstance()->getAppTempDir() . '/var/log/';
+        foreach ($this->logger->getHandlers() as $handler) {
+            if ($handler instanceof SystemLogHandler) {
+                $this->logDir = dirname($handler->getUrl());
+                break;
+            }
+        }
     }
 
-    public function testLog()
+    public function testDebugLog()
     {
         $logMessage = uniqid('some_log_entry_');
         $this->logger->debug($logMessage, ['some' => 'context']);
@@ -44,7 +50,7 @@ class StandardLoggerTest extends TestCase
 
     private function getLineFromLog($logfile, $logMessage)
     {
-        $logFile = $this->logDir . $logfile;
+        $logFile = rtrim($this->logDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $logfile;
         $this->assertFileExists($logFile, ' log file does not exist');
         $contents = \file_get_contents($logFile);
         $this->assertStringContainsString($logMessage, $contents, 'Log file does not contain message');

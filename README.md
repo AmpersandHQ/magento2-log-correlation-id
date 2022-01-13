@@ -1,5 +1,7 @@
 # magento2-log-correlation-id
 
+[![Build Status](https://app.travis-ci.com/AmpersandHQ/magento2-log-correlation-id.svg?token=4DzjEueYNQwZuk3ywXjG&branch=main)](https://app.travis-ci.com/AmpersandHQ/magento2-log-correlation-id)
+
 Magento 2 log correlation id for PHP requests/processes and magento logs.
 
 This is useful when debugging issues on a production site as high amounts of traffic can cause many logs to be written and identifying which logs belong to a specific failing request can sometimes be difficult.
