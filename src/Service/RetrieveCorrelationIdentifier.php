@@ -22,7 +22,7 @@ class RetrieveCorrelationIdentifier
      * @param string $identifierKey
      * @param string $headerInput
      */
-    public function __construct(string $identifierKey = 'amp_correlation_id', string $headerInput = '')
+    public function __construct(string $identifierKey, string $headerInput)
     {
         $this->correlationIdKey = $identifierKey;
         $this->headerInput = $headerInput;
