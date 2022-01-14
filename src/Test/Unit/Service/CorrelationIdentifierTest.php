@@ -2,11 +2,11 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Test\Unit\Service;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use PHPUnit\Framework\TestCase;
 
-class RetrieveCorrelationIdentifierTest extends TestCase
+class CorrelationIdentifierTest extends TestCase
 {
     public function testGetKey()
     {
@@ -21,7 +21,7 @@ class RetrieveCorrelationIdentifierTest extends TestCase
     public function testGetIdentifierWithoutInit()
     {
         $service = $this->createService();
-        $this->assertEquals('correlation_id_error', $service->getIdentifierValue());
+        $this->assertEquals('correlation_id_value_error', $service->getIdentifierValue());
     }
 
     public function testGetIdentifier()
@@ -32,7 +32,7 @@ class RetrieveCorrelationIdentifierTest extends TestCase
             ->willReturn(false);
 
         $service = $this->createService();
-        $service->init($httpRequest);
+        $service->init($httpRequest, true);
         $val1 = $service->getIdentifierValue();
         $this->assertIsString($val1, 'Identifier should be a string');
         $this->assertStringContainsString(
@@ -41,20 +41,15 @@ class RetrieveCorrelationIdentifierTest extends TestCase
             'Identifier should contain cid-'
         );
 
-        $this->assertEquals($val1, $service->getIdentifierValue(), 'Repeat calls give same value');
-        $this->assertEquals($val1, $service->getIdentifierValue(), 'Repeat calls give same value');
-        $this->assertEquals($val1, $service->getIdentifierValue(), 'Repeat calls give same value');
-
         $service2 = $this->createService();
+        $service2->init($httpRequest, true);
         $this->assertEquals(
             $service->getIdentifierKey(),
-            $service2->getIdentifierKey(),
-            'Multiple instances of the identifier service singleton should have same key'
+            $service2->getIdentifierKey()
         );
         $this->assertNotEquals(
-            $service->getIdentifierValue(),
-            $service2->getIdentifierValue(),
-            'Multiple instances of the identifier service singleton should have different values'
+            $val1,
+            $service2->getIdentifierValue()
         );
     }
 
@@ -67,7 +62,7 @@ class RetrieveCorrelationIdentifierTest extends TestCase
             ->willReturn('abc123def456');
 
         $service = $this->createService('amp_correlation_id', 'x-header-name-here');
-        $service->init($httpRequest);
+        $service->init($httpRequest, true);
 
         $val = $service->getIdentifierValue();
         $this->assertIsString($val, 'Identifier should be a string');
@@ -77,12 +72,15 @@ class RetrieveCorrelationIdentifierTest extends TestCase
     /**
      * @param string $key
      * @param string $header
-     * @return RetrieveCorrelationIdentifier
+     * @return CorrelationIdentifier
      */
     private function createService(
         string $key = 'amp_correlation_id',
         string $header = ''
-    ): RetrieveCorrelationIdentifier {
-        return new RetrieveCorrelationIdentifier($key, $header);
+    ): CorrelationIdentifier {
+        // Reset the key value storage for the purposes of the test
+        CorrelationIdentifier\Storage::setKey('', true);
+        CorrelationIdentifier\Storage::setValue('', true);
+        return new CorrelationIdentifier($key, $header);
     }
 }

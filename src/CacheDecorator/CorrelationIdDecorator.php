@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\CacheDecorator;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Cache\Frontend\Decorator\Bare;
 use Magento\Framework\Cache\FrontendInterface;
@@ -18,30 +18,35 @@ class CorrelationIdDecorator extends Bare
      * objects for the first time.
      *
      * Get the HTTP request in the same way that the core does
-     * @see \Magento\Framework\Cache\Frontend\Decorator\Logger::__construct
+     *
      * @see \Magento\Framework\Cache\InvalidateLogger::__construct
      *
      * We need to get the correlation ID if it exists as early as possible in the PHP execution so this seems to be the
      * earliest place where the data exists and covers all magento instantiation journeys.
      *
+     * @see \Magento\Framework\Cache\Frontend\Decorator\Logger::__construct
+     *
      * @param FrontendInterface $frontend
      * @param HttpRequest $request
-     * @param RetrieveCorrelationIdentifier $retriever
+     * @param CorrelationIdentifier $correlationIdentifier
      */
     public function __construct(
         FrontendInterface $frontend,
         HttpRequest $request,
-        RetrieveCorrelationIdentifier $retriever
+        CorrelationIdentifier $correlationIdentifier
     ) {
         parent::__construct($frontend);
-        $retriever->init($request);
+        $correlationIdentifier->init($request);
 
         /**
          * We want New Relic transaction info added as early as possible in the magento instantiation so that the
          * correlation id is present in the event of some error when booting up the application
          */
         if (extension_loaded('newrelic') && function_exists('newrelic_add_custom_parameter')) {
-            newrelic_add_custom_parameter($retriever->getIdentifierKey(), $retriever->getIdentifierValue());
+            newrelic_add_custom_parameter(
+                $correlationIdentifier->getIdentifierKey(),
+                $correlationIdentifier->getIdentifierValue()
+            );
         }
     }
 }

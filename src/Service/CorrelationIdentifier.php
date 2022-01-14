@@ -2,19 +2,16 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Service;
 
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier\Storage;
 use Magento\Framework\App\Request\Http as HttpRequest;
 
 /**
  * This class cannot have any dependencies that are not fully defined in app/etc/*di.xml
  */
-class RetrieveCorrelationIdentifier
+class CorrelationIdentifier
 {
     /** @var string */
-    private string $correlationIdKey;
-    /** @var string */
     private string $headerInput;
-    /** @var string */
-    private string $correlationIdValue;
 
     /**
      * Constructor
@@ -24,25 +21,25 @@ class RetrieveCorrelationIdentifier
      */
     public function __construct(string $identifierKey, string $headerInput)
     {
-        $this->correlationIdKey = $identifierKey;
+        Storage::setKey($identifierKey);
         $this->headerInput = $headerInput;
     }
 
     /**
-     * Initialiase with the correlation identifier from the request object
+     * Initialise with the correlation identifier from the request object
      *
      * If no header present in the request object we will generate a unique one
      *
+     * The force param is only here for use during test cases
+     *
      * @param HttpRequest $request
+     * @param false|true $force
+     *
      * @return void
      */
-    public function init(HttpRequest $request)
+    public function init(HttpRequest $request, bool $force = false)
     {
-        if (isset($this->correlationIdValue)) {
-            return;
-        }
-
-        $identifier =  $this->correlationIdValue = uniqid('cid-');
+        $identifier = uniqid('cid-');
 
         if (is_string($this->headerInput) && strlen($this->headerInput)) {
             $idFromHeader = $request->getHeader($this->headerInput);
@@ -51,27 +48,17 @@ class RetrieveCorrelationIdentifier
             }
         }
 
-        $this->correlationIdValue = $identifier;
+        Storage::setValue($identifier, $force);
     }
 
     /**
-     * Return this processes log correlation ID, we should only ever use this class as a singleton to ensure consistency
+     * Return this processes log correlation ID
      *
      * @return string
      */
     public function getIdentifierValue(): string
     {
-        if (!isset($this->correlationIdValue)) {
-            /**
-             * This process has been generated in a way that the magento cache system wasn't triggered
-             *
-             * It is most likely you are running magento in developer mode, otherwise this needs reviewed
-             *
-             * @see \Magento\Framework\App\ObjectManagerFactory::class
-             */
-            return 'correlation_id_error';
-        }
-        return $this->correlationIdValue;
+        return Storage::getValue();
     }
 
     /**
@@ -81,6 +68,6 @@ class RetrieveCorrelationIdentifier
      */
     public function getIdentifierKey(): string
     {
-        return $this->correlationIdKey;
+        return Storage::getKey();
     }
 }

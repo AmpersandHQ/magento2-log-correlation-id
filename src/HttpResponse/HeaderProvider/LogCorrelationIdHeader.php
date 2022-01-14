@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\HttpResponse\HeaderProvider;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\App\Response\HeaderProvider\AbstractHeaderProvider;
 
 class LogCorrelationIdHeader extends AbstractHeaderProvider
@@ -17,10 +17,10 @@ class LogCorrelationIdHeader extends AbstractHeaderProvider
     /**
      * Constructor
      *
-     * @param RetrieveCorrelationIdentifier $retriever
+     * @param CorrelationIdentifier $correlationIdentifier
      */
-    public function __construct(RetrieveCorrelationIdentifier $retriever)
+    public function __construct(CorrelationIdentifier $correlationIdentifier)
     {
-        $this->headerValue = $retriever->getIdentifierValue();
+        $this->headerValue = $correlationIdentifier->getIdentifierValue();
     }
 }

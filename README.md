@@ -10,35 +10,46 @@ With this you should easily be able to find all associated logs for a given web 
 - From a web request you can look at the `X-Log-Correlation-Id` header then search all your magento log files for the logs corresponding to only that request.
 - You can also find the log correlation identifier attached to New Relic transactions.
 
+## Install
+
+Composer install the module.
+```bash
+composer require ampersand/magento2-log-correlation-id
+```
+
+Add the additional dependency injection config necessary to boot early in the application flow
+```bash
+mkdir app/etc/ampersand_magento2_log_correlation
+cp vendor/ampersand/magento2-log-correlation-id/dev/ampersand_magento2_log_correlation/di.xml app/etc/ampersand_magento2_log_correlation/
+```
+
+Run module installation
+```bash
+php bin/magento setup:upgrade
+```
+
+## Uninstall
+
+```bash
+rm app/etc/ampersand_magento2_log_correlation/di.xml
+php bin/magento module:disable Ampersand_LogCorrelationId
+```
+
 ## How it works
 
 ###  Entry point
 
-This module creates a new Cache Decorator (`src/CacheDecorator/CorrelationIdDecorator.php`). It needs to be here so that it's constructed immediately after `Magento\Framework\Cache\Frontend\Decorator\Logger` which is the class responsible for instantiating `Magento\Framework\App\Request\Http` and the Logger triggered after. 
+This module creates a new cache decorator (`src/CacheDecorator/CorrelationIdDecorator.php`). It needs to be here so that it's constructed immediately after `Magento\Framework\Cache\Frontend\Decorator\Logger` which is the class responsible for instantiating `Magento\Framework\App\Request\Http` and the Logger triggered after. 
 
-This is the earliest point in the magento stack where we can get any existing trace-id (for example `cf-request-id`) and have it attached to any logs produced.
+This is the earliest point in the magento stack where we can get any existing traceId from a request header (for example `cf-request-id`) and have it attached to any logs produced.
+
+This cache decorator initialises the identifier which is immutable for the remainder of the request.
 
 ### Exit points
-- The correlation ID is attached to web requests as `X-Log-Correlation-Id` in `src/HttpResponse/HeaderProvider/LogCorrelationIdHeader.php`
-    - REST API requests work a bit differently in Magento and use the following to attach the header `src/Plugin/AddToWebApiResponse.php`
+- The correlation ID is attached to web responses as `X-Log-Correlation-Id` in `src/HttpResponse/HeaderProvider/LogCorrelationIdHeader.php`
+    - REST API requests work a bit differently in Magento and attach the header using `src/Plugin/AddToWebApiResponse.php`
 - Monolog files have the correlation ID added into their context section under the key `amp_correlation_id` via `src/Processor/MonologCorrelationId.php`
 - New Relic has this added as a custom parameter under the key `amp_correlation_id`
-
-## Installation
-
-Composer install the module.
-```
-composer require ampersand/magento2-log-correlation-id
-```
-
-Run module installation
-```shell
-php bin/magento setup:upgrade
-```
-
-This module does not work properly when magento is in developer mode. This is because the object manager is only constructed with the contents of `app/etc/*di.xml` rather than the full compiled configuration. Without the full di configuration at the time of constructing the object manager the custom cache decorator is not included and the correlation ID cannot be set for the request.
-
-Run `php bin/magento di:compile` if you want to debug/test this module locally.
 
 ## Example usage
 
@@ -68,7 +79,7 @@ If the request was long-running, or had an error it may also be flagged in new r
 
 ## Use existing correlation id from request header
 
-If you want to use an upstream correlation/trace ID you can define one di.xml
+If you want to use an upstream correlation/trace ID you can define one `app/etc/ampersand_magento2_log_correlation/di.xml`
 
 ```xml
 <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
@@ -82,7 +93,7 @@ If this is present on the request magento will use that value for `X-Log-Correla
 
 # Change the key name from `amp_correlation_id`
 
-You can change the monolog/new relic key from `amp_correlation_id` using di.xml
+You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/ampersand_magento2_log_correlation/di.xml`
 
 ```xml
 <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
