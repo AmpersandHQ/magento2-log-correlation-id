@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Plugin;
 
+use Ampersand\LogCorrelationId\HttpResponse\HeaderProvider\LogCorrelationIdHeader as Header;
 use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
 use Magento\Framework\HTTP\PhpEnvironment\Response as HttpResponse;
 
@@ -30,10 +31,10 @@ class AddToWebApiResponse
      */
     public function beforeSendResponse(HttpResponse $subject):? string
     {
-        if ($subject->getHeader('X-Log-Correlation-Id')) {
+        if ($subject->getHeader(Header::X_LOG_CORRELATION_ID)) {
             return null;
         }
-        $subject->setHeader('X-Log-Correlation-Id', $this->retriever->getIdentifierValue(), true);
+        $subject->setHeader(Header::X_LOG_CORRELATION_ID, $this->retriever->getIdentifierValue(), true);
         return null;
     }
 }

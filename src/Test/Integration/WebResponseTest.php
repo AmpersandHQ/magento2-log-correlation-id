@@ -2,18 +2,13 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Test\Integration;
 
+use Ampersand\LogCorrelationId\HttpResponse\HeaderProvider\LogCorrelationIdHeader as Header;
 use Magento\Framework\App\ResponseInterface;
 use Magento\TestFramework\Helper\Bootstrap;
 use PHPUnit\Framework\TestCase;
 
 class WebResponseTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        /** @var \Magento\TestFramework\ObjectManager $objectManager */
-        $objectManager = Bootstrap::getObjectManager();
-    }
-
     /**
      * @dataProvider dataProvider
      */
@@ -23,13 +18,13 @@ class WebResponseTest extends TestCase
         $response = Bootstrap::getObjectManager()->create($class);
 
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertFalse($response->getHeader('X-Log-Correlation-id'), 'Header should not exist yet');
+        $this->assertFalse($response->getHeader(Header::X_LOG_CORRELATION_ID), 'Header should not exist yet');
 
         ob_start();
         $response->sendResponse();
         ob_end_clean();
 
-        $this->assertNotFalse($response->getHeader('X-Log-Correlation-id'), 'Header is not present');
+        $this->assertNotFalse($response->getHeader(Header::X_LOG_CORRELATION_ID), 'Header is not present');
     }
 
     public function dataProvider()

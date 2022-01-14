@@ -7,10 +7,12 @@ use Magento\Framework\App\Response\HeaderProvider\AbstractHeaderProvider;
 
 class LogCorrelationIdHeader extends AbstractHeaderProvider
 {
+    public const X_LOG_CORRELATION_ID = 'X-Log-Correlation-Id';
+
     /**
      * @var string
      */
-    protected $headerName = 'X-Log-Correlation-Id';
+    protected $headerName = self::X_LOG_CORRELATION_ID;
 
     /**
      * Constructor

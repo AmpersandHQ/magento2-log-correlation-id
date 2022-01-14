@@ -2,10 +2,17 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Service;
 
+use Magento\Framework\App\Request\Http as HttpRequest;
+
+/**
+ * This class cannot have any dependencies that are not fully defined in app/etc/*di.xml
+ */
 class RetrieveCorrelationIdentifier
 {
     /** @var string */
     private string $correlationIdKey;
+    /** @var string */
+    private string $headerInput;
     /** @var string */
     private string $correlationIdValue;
 
@@ -13,42 +20,38 @@ class RetrieveCorrelationIdentifier
      * Constructor
      *
      * @param string $identifierKey
+     * @param string $headerInput
      */
-    public function __construct(string $identifierKey)
+    public function __construct(string $identifierKey = 'amp_correlation_id', string $headerInput = '')
     {
         $this->correlationIdKey = $identifierKey;
-        $this->correlationIdValue = uniqid('cid-');
+        $this->headerInput = $headerInput;
+    }
 
-        /**
-         * This is a bit of a hack
-         *
-         * We want New Relic transaction info added as early as possible in the magento instantiation so that the
-         * correlation id is present in the event of some error when booting up the application
-         *
-         * Putting it here ensures that it is added as soon as is possible. Depending on how magento is instantiated
-         * different bits of this module will hook in first.
-         * (sometimes it's the web header, sometimes is the monolog processor)
-         *
-         * We cannot rely on plugins or observers as this is too late in the process
-         *
-         * By putting this new relic logic in here we can ensure that every time we try and set a correlation ID on
-         * either a log entry or on a web request that we'll have a corresponding value in new relic.
-         *
-         * It is possible to boot the magento without triggering this code, for example
-         *
-         * use Magento\Framework\App\Bootstrap;
-         * require __DIR__ . '/../app/bootstrap.php';
-         * $bootstrap = Bootstrap::create(BP, $_SERVER);
-         * $obj = $bootstrap->getObjectManager();
-         *
-         * However as soon as the logger is instantiated this code will trigger, if you have no logs then there's not
-         * anything to correlate to in any case
-         *
-         * @author Luke Rodgers <lr@amp.co>
-         */
-        if (extension_loaded('newrelic') && function_exists('newrelic_add_custom_span_parameter')) {
-            newrelic_add_custom_parameter($this->correlationIdKey, $this->correlationIdValue);
+    /**
+     * Initialiase with the correlation identifier from the request object
+     *
+     * If no header present in the request object we will generate a unique one
+     *
+     * @param HttpRequest $request
+     * @return void
+     */
+    public function init(HttpRequest $request)
+    {
+        if (isset($this->correlationIdValue)) {
+            return;
         }
+
+        $identifier =  $this->correlationIdValue = uniqid('cid-');
+
+        if (is_string($this->headerInput) && strlen($this->headerInput)) {
+            $idFromHeader = $request->getHeader($this->headerInput);
+            if (is_string($idFromHeader) && strlen($idFromHeader)) {
+                $identifier = substr($idFromHeader, 0, 64);
+            }
+        }
+
+        $this->correlationIdValue = $identifier;
     }
 
     /**
@@ -58,6 +61,10 @@ class RetrieveCorrelationIdentifier
      */
     public function getIdentifierValue(): string
     {
+        if (!isset($this->correlationIdValue)) {
+            // This process has been generated in a way that the magento cache system wasn't triggered, needs reviewed
+            return 'correlation_id_error';
+        }
         return $this->correlationIdValue;
     }
 
