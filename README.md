@@ -27,7 +27,6 @@ This is the earliest point in the magento stack where we can get any existing tr
 ## Installation
 
 Composer install the module.
-This will also create `app/etc/log-correlation-id-decorator-di.xml` so add that to your `.gitignore`
 ```
 composer require ampersand/magento2-log-correlation-id
 ```
@@ -37,13 +36,9 @@ Run module installation
 php bin/magento setup:upgrade
 ```
 
-## Uninstallation
+This module does not work properly when magento is in developer mode. This is because the object manager is only constructed with the contents of `app/etc/*di.xml` rather than the full compiled configuration. Without the full di configuration at the time of constructing the object manager the custom cache decorator is not included and the correlation ID cannot be set for the request.
 
-```
-php bin/magento module:disable Ampersand_LogCorrelationId
-rm app/etc/log-correlation-id-decorator-di.xml
-composer remove ampersand/magento2-log-correlation-id
-```
+Run `php bin/magento di:compile` if you want to debug/test this module locally.
 
 ## Example usage
 
@@ -73,7 +68,7 @@ If the request was long-running, or had an error it may also be flagged in new r
 
 ## Use existing correlation id from request header
 
-If you want to use an upstream correlation/trace ID you can define one in `app/etc/log-correlation-id-config-di.xml`
+If you want to use an upstream correlation/trace ID you can define one di.xml
 
 ```xml
 <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
@@ -87,7 +82,7 @@ If this is present on the request magento will use that value for `X-Log-Correla
 
 # Change the key name from `amp_correlation_id`
 
-You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/log-correlation-id-config-di.xml`
+You can change the monolog/new relic key from `amp_correlation_id` using di.xml
 
 ```xml
 <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">

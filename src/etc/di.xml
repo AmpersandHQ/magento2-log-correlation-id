@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
     <!-- This only takes effect when di has been compiled -->
-    <!-- see \Magento\Framework\App\ObjectManagerFactory::create which only does _loadPrimaryConfig  -->
+    <!-- see \Magento\Framework\App\ObjectManagerFactory::create which only does _loadPrimaryConfig in dev mode -->
     <type name="Magento\Framework\App\Cache\Frontend\Factory">
         <arguments>
             <argument name="decorators" xsi:type="array">
