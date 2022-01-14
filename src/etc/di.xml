@@ -2,6 +2,29 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
+    <!-- This only takes effect when di has been compiled -->
+    <!-- see \Magento\Framework\App\ObjectManagerFactory::create which only does _loadPrimaryConfig  -->
+    <type name="Magento\Framework\App\Cache\Frontend\Factory">
+        <arguments>
+            <argument name="decorators" xsi:type="array">
+                <item name="amp_correlation_id" xsi:type="array">
+                    <item name="class" xsi:type="string">Ampersand\LogCorrelationId\CacheDecorator\CorrelationIdDecorator</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- These only exist in the module di.xml to make integration testing possible, proper installation requires the creation of app/etc/log-correlation-id-di.xml -->
+    <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
+        <arguments>
+            <!-- This is the key used in log outputs and new relic custom parameter -->
+            <argument name="identifierKey" xsi:type="string">amp_correlation_id</argument>
+            <!-- configure this if you want to use an incoming log correlation id from a request header -->
+            <argument name="headerInput" xsi:type="string"/>
+        </arguments>
+    </type>
+
+
     <!-- Attach amp_correlation_id to all monolog entries -->
     <type name="Magento\Framework\Logger\Monolog">
         <arguments>

@@ -62,7 +62,13 @@ class RetrieveCorrelationIdentifier
     public function getIdentifierValue(): string
     {
         if (!isset($this->correlationIdValue)) {
-            // This process has been generated in a way that the magento cache system wasn't triggered, needs reviewed
+            /**
+             * This process has been generated in a way that the magento cache system wasn't triggered
+             *
+             * It is most likely you are running magento in developer mode, otherwise this needs reviewed
+             *
+             * @see \Magento\Framework\App\ObjectManagerFactory::class
+             */
             return 'correlation_id_error';
         }
         return $this->correlationIdValue;

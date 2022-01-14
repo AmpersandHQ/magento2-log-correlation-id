@@ -17,8 +17,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "magento/framework": "*",
-        "magento/magento-composer-installer": "*"
+        "magento/framework": "*"
     },
     "autoload": {
         "files": [
@@ -59,12 +58,6 @@
             "*": [
                 "/"
             ]
-        },
-        "map": [
-            [
-                "src/log-correlation-id-decorator-di.xml",
-                "app/etc/log-correlation-id-decorator-di.xml"
-            ]
-        ]
+        }
     }
 }
