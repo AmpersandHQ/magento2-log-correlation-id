@@ -77,6 +77,18 @@ If the request was long-running, or had an error it may also be flagged in new r
  
 # Configuration and Customisation
 
+# Change the key name from `amp_correlation_id`
+
+You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/ampersand_magento2_log_correlation/di.xml`
+
+```xml
+<type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
+    <arguments>
+        <argument name="identifierKey" xsi:type="string">your_key_name_here</argument>
+    </arguments>
+</type>
+```
+
 ## Use existing correlation id from request header
 
 If you want to use an upstream correlation/trace ID you can define one `app/etc/ampersand_magento2_log_correlation/di.xml`
@@ -91,14 +103,13 @@ If you want to use an upstream correlation/trace ID you can define one `app/etc/
 
 If this is present on the request magento will use that value for `X-Log-Correlation-Id`, the monolog context, and the New Relic parameter. Otherwise magento will generate one.
 
-# Change the key name from `amp_correlation_id`
+For example 
+```shell
+$ 2>&1 curl  -H 'X-Your-Header-Here: abc123' https://your-magento-site.example.com/ -vvv | grep "X-Log-Correlation-Id"
+< X-Log-Correlation-Id: abc123
+```
 
-You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/ampersand_magento2_log_correlation/di.xml`
-
-```xml
-<type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
-    <arguments>
-        <argument name="identifierKey" xsi:type="string">your_key_name_here</argument>
-    </arguments>
-</type>
+```shell
+$ 2>&1 curl https://your-magento-site.example.com/ -vvv | grep "X-Log-Correlation-Id"
+< X-Log-Correlation-Id: cid-61e4194d1bea5
 ```
