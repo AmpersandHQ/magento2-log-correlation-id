@@ -82,7 +82,7 @@ If the request was long-running, or had an error it may also be flagged in new r
 You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/ampersand_magento2_log_correlation/di.xml`
 
 ```xml
-<type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
+<type name="Ampersand\LogCorrelationId\Service\CorrelationIdentifier">
     <arguments>
         <argument name="identifierKey" xsi:type="string">your_key_name_here</argument>
     </arguments>
@@ -94,7 +94,7 @@ You can change the monolog/new relic key from `amp_correlation_id` using `app/et
 If you want to use an upstream correlation/trace ID you can define one `app/etc/ampersand_magento2_log_correlation/di.xml`
 
 ```xml
-<type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
+<type name="Ampersand\LogCorrelationId\Service\CorrelationIdentifier">
     <arguments>
         <argument name="headerInput" xsi:type="string">X-Your-Header-Here</argument>
     </arguments>
