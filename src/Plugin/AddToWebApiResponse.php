@@ -2,24 +2,25 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Plugin;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\HttpResponse\HeaderProvider\LogCorrelationIdHeader as Header;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\HTTP\PhpEnvironment\Response as HttpResponse;
 
 class AddToWebApiResponse
 {
     /**
-     * @var RetrieveCorrelationIdentifier
+     * @var CorrelationIdentifier
      */
-    private RetrieveCorrelationIdentifier $retriever;
+    private CorrelationIdentifier $correlationIdentifier;
 
     /**
      * Constructor
      *
-     * @param RetrieveCorrelationIdentifier $retriever
+     * @param CorrelationIdentifier $correlationIdentifier
      */
-    public function __construct(RetrieveCorrelationIdentifier $retriever)
+    public function __construct(CorrelationIdentifier $correlationIdentifier)
     {
-        $this->retriever = $retriever;
+        $this->correlationIdentifier = $correlationIdentifier;
     }
 
     /**
@@ -30,10 +31,14 @@ class AddToWebApiResponse
      */
     public function beforeSendResponse(HttpResponse $subject):? string
     {
-        if ($subject->getHeader('X-Log-Correlation-Id')) {
+        if ($subject->getHeader(Header::X_LOG_CORRELATION_ID)) {
             return null;
         }
-        $subject->setHeader('X-Log-Correlation-Id', $this->retriever->getIdentifierValue(), true);
+        $subject->setHeader(
+            Header::X_LOG_CORRELATION_ID,
+            $this->correlationIdentifier->getIdentifierValue(),
+            true
+        );
         return null;
     }
 }

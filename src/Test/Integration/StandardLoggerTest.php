@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Test\Integration;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\Logger\Handler\System as SystemLogHandler;
 use Magento\Framework\Logger\Monolog;
 use Magento\TestFramework\Helper\Bootstrap;
@@ -34,7 +34,7 @@ class StandardLoggerTest extends TestCase
         $this->logger->debug($logMessage, ['some' => 'context']);
         $lineFromLog = $this->getLineFromLog('debug.log', $logMessage);
 
-        $identifier = Bootstrap::getObjectManager()->get(RetrieveCorrelationIdentifier::class)->getIdentifierValue();
+        $identifier = Bootstrap::getObjectManager()->get(CorrelationIdentifier::class)->getIdentifierValue();
         $this->assertStringContainsString($identifier, $lineFromLog);
     }
 
@@ -44,7 +44,7 @@ class StandardLoggerTest extends TestCase
         $this->logger->info($logMessage, ['some' => 'context']);
         $lineFromLog = $this->getLineFromLog('system.log', $logMessage);
 
-        $identifier = Bootstrap::getObjectManager()->get(RetrieveCorrelationIdentifier::class)->getIdentifierValue();
+        $identifier = Bootstrap::getObjectManager()->get(CorrelationIdentifier::class)->getIdentifierValue();
         $this->assertStringContainsString($identifier, $lineFromLog);
     }
 

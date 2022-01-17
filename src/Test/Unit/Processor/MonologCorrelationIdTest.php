@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Test\Unit\Processor;
 
 use Ampersand\LogCorrelationId\Processor\MonologCorrelationId;
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use PHPUnit\Framework\TestCase;
 
 class MonologCorrelationIdTest extends TestCase
@@ -15,15 +15,15 @@ class MonologCorrelationIdTest extends TestCase
 
     protected function setUp(): void
     {
-        $retriever = $this->createMock(RetrieveCorrelationIdentifier::class);
-        $retriever->expects($this->any())
+        $correlationIdentifier = $this->createMock(CorrelationIdentifier::class);
+        $correlationIdentifier->expects($this->any())
             ->method('getIdentifierKey')
             ->willReturn('correlation_id');
-        $retriever->expects($this->any())
+        $correlationIdentifier->expects($this->any())
             ->method('getIdentifierValue')
             ->willReturn('identifier_value_123');
 
-        $this->processor = new MonologCorrelationId($retriever);
+        $this->processor = new MonologCorrelationId($correlationIdentifier);
     }
 
     /**

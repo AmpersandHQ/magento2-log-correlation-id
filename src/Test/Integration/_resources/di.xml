@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\App\Cache\Frontend\Factory">
+        <arguments>
+            <argument name="decorators" xsi:type="array">
+                <item name="amp_correlation_id" xsi:type="array">
+                    <item name="class" xsi:type="string">Ampersand\LogCorrelationId\CacheDecorator\CorrelationIdDecorator</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
+        <arguments>
+            <!-- This is the key used in log outputs and new relic custom parameter -->
+            <argument name="identifierKey" xsi:type="string">amp_correlation_id</argument>
+            <!-- configure this if you want to use an incoming log correlation id from a request header -->
+            <argument name="headerInput" xsi:type="string">X-Some-Trace-Id</argument>
+        </arguments>
+    </type>
+</config>

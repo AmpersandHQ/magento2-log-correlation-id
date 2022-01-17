@@ -2,23 +2,25 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\HttpResponse\HeaderProvider;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\App\Response\HeaderProvider\AbstractHeaderProvider;
 
 class LogCorrelationIdHeader extends AbstractHeaderProvider
 {
+    public const X_LOG_CORRELATION_ID = 'X-Log-Correlation-Id';
+
     /**
      * @var string
      */
-    protected $headerName = 'X-Log-Correlation-Id';
+    protected $headerName = self::X_LOG_CORRELATION_ID;
 
     /**
      * Constructor
      *
-     * @param RetrieveCorrelationIdentifier $retriever
+     * @param CorrelationIdentifier $correlationIdentifier
      */
-    public function __construct(RetrieveCorrelationIdentifier $retriever)
+    public function __construct(CorrelationIdentifier $correlationIdentifier)
     {
-        $this->headerValue = $retriever->getIdentifierValue();
+        $this->headerValue = $correlationIdentifier->getIdentifierValue();
     }
 }

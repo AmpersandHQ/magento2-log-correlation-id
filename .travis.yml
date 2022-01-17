@@ -39,6 +39,9 @@ script:
     - cd vendor/ampersand/travis-vanilla-magento/instances/ampmodule
     - composer config repo.ampmodule git "$TRAVIS_BUILD_DIR"
     - composer require -vvv "$COMPOSER_PACKAGE_NAME:dev-$TRAVIS_BRANCH" || composer require -vvv "$COMPOSER_PACKAGE_NAME:$TRAVIS_BRANCH"
+    # Configure the additional di.xml
+    - mkdir -p $TRAVIS_BUILD_DIR/vendor/ampersand/travis-vanilla-magento/instances/ampmodule/app/etc/ampersand_magento2_log_correlation/
+    - cp $TRAVIS_BUILD_DIR/dev/ampersand_magento2_log_correlation/di.xml $TRAVIS_BUILD_DIR/vendor/ampersand/travis-vanilla-magento/instances/ampmodule/app/etc/ampersand_magento2_log_correlation/
     # Configure for integration tests
     - mysql -uroot -e 'SET @@global.sql_mode = NO_ENGINE_SUBSTITUTION; DROP DATABASE IF EXISTS magento_integration_tests; CREATE DATABASE magento_integration_tests;'
     - cp dev/tests/integration/etc/install-config-mysql.travis-no-rabbitmq.php.dist dev/tests/integration/etc/install-config-mysql.php

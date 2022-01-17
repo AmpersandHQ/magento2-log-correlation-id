@@ -2,23 +2,23 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Processor;
 
-use Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier;
+use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 
 class MonologCorrelationId
 {
     /**
-     * @var RetrieveCorrelationIdentifier
+     * @var CorrelationIdentifier
      */
-    private RetrieveCorrelationIdentifier $retriever;
+    private CorrelationIdentifier $correlationIdentifier;
 
     /**
      * Constructor
      *
-     * @param RetrieveCorrelationIdentifier $retriever
+     * @param CorrelationIdentifier $correlationIdentifier
      */
-    public function __construct(RetrieveCorrelationIdentifier $retriever)
+    public function __construct(CorrelationIdentifier $correlationIdentifier)
     {
-        $this->retriever = $retriever;
+        $this->correlationIdentifier = $correlationIdentifier;
     }
 
     /**
@@ -30,9 +30,9 @@ class MonologCorrelationId
      */
     public function addCorrelationId(array $record): array
     {
-        $key = $this->retriever->getIdentifierKey();
+        $key = $this->correlationIdentifier->getIdentifierKey();
         if (isset($record['context']) && is_array($record['context']) && !isset($record['context'][$key])) {
-            $record['context'] = [$key => $this->retriever->getIdentifierValue()] + $record['context'];
+            $record['context'] = [$key => $this->correlationIdentifier->getIdentifierValue()] + $record['context'];
         }
         return $record;
     }

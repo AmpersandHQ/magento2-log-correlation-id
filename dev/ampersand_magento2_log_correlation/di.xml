@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    Due to the order of di loading putting this config in the module directory does not seem to take effect, it needs to be primary config in app/etc
+
+    This allows us to add a new cache decorator, see comments on the PHP file for the reasons why
+
+    It needs to be in its own app/etc/ampersand_magento2_log_correlation/ directory so that it is picked up by the magento framework and the magento integration tests
+    -->
+    <type name="Magento\Framework\App\Cache\Frontend\Factory">
+        <arguments>
+            <argument name="decorators" xsi:type="array">
+                <item name="amp_correlation_id" xsi:type="array">
+                    <item name="class" xsi:type="string">Ampersand\LogCorrelationId\CacheDecorator\CorrelationIdDecorator</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- The only dependency of the above cache decorator -->
+    <type name="Ampersand\LogCorrelationId\Service\CorrelationIdentifier">
+        <arguments>
+            <!-- This will be the key output in log context and new relic custom parameter -->
+            <argument name="identifierKey" xsi:type="string">amp_correlation_id</argument>
+            <!-- configure this if you want to use an incoming log correlation id from a request header -->
+            <argument name="headerInput" xsi:type="string"></argument>
+        </arguments>
+    </type>
+</config>

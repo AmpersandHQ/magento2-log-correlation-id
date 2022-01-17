@@ -1,14 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-
-    <!-- So that the key in the log files can be amended -->
-    <type name="Ampersand\LogCorrelationId\Service\RetrieveCorrelationIdentifier">
-        <arguments>
-            <argument name="identifierKey" xsi:type="string">amp_correlation_id</argument>
-        </arguments>
-    </type>
-
     <!-- Attach amp_correlation_id to all monolog entries -->
     <type name="Magento\Framework\Logger\Monolog">
         <arguments>
