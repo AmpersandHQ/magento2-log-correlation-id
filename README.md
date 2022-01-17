@@ -39,7 +39,9 @@ php bin/magento module:disable Ampersand_LogCorrelationId
 
 ###  Entry point
 
-This module creates a new cache decorator (`src/CacheDecorator/CorrelationIdDecorator.php`). It needs to be here so that it's constructed immediately after `Magento\Framework\Cache\Frontend\Decorator\Logger` which is the class responsible for instantiating `Magento\Framework\App\Request\Http` and the Logger triggered after. 
+This module creates a new cache decorator (`src/CacheDecorator/CorrelationIdDecorator.php`). 
+
+It needs to be here so that it's constructed immediately after `Magento\Framework\Cache\Frontend\Decorator\Logger` which is the class responsible for instantiating `Magento\Framework\App\Request\Http` and the Logger triggered after. 
 
 This is the earliest point in the magento stack where we can get any existing traceId from a request header (for example `cf-request-id`) and have it attached to any logs produced.
 
@@ -77,7 +79,7 @@ If the request was long-running, or had an error it may also be flagged in new r
  
 # Configuration and Customisation
 
-# Change the key name from `amp_correlation_id`
+## Change the key name from `amp_correlation_id`
 
 You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/ampersand_magento2_log_correlation/di.xml`
 
