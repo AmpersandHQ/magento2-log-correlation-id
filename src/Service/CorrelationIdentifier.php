@@ -44,7 +44,7 @@ class CorrelationIdentifier
         if (is_string($this->headerInput) && strlen($this->headerInput)) {
             $idFromHeader = $request->getHeader($this->headerInput);
             if (is_string($idFromHeader) && strlen($idFromHeader)) {
-                $identifier = substr($idFromHeader, 0, 64);
+                $identifier = substr($idFromHeader, 0, 256);
             }
         }
 

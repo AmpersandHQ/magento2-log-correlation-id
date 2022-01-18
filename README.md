@@ -72,7 +72,8 @@ The above configuration would give log output like the following when viewing a 
 You could then search for all magento logs pertaining to that request 
 
 ```shell
-grep -r cid-61e00714d1920 ./var/log
+$ grep -ri 61e04d741bf78 ./var/log
+./var/log/system.log:[2022-01-13 16:04:14] main.INFO: some_log_entry_61e04d7e2ed03 {"amp_correlation_id":"cid-61e04d741bf78","some":"context"} []
 ```
 
 If the request was long-running, or had an error it may also be flagged in new relic with the custom parameter `amp_correlation_id`
