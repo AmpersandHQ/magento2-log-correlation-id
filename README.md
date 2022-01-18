@@ -66,7 +66,7 @@ CustomLog "/path/to/var/log/httpd/access_log" examplelogformat
 The above configuration would give log output like the following when viewing a page
 
 ```shell
-[13/Jan/2021:11:34:37 +0000] /some-cms-page/ cid-61e006137ceec
+[13/Jan/2021:11:34:37 +0000] /some-cms-page/ cid-61e04d741bf78
 ```
 
 You could then search for all magento logs pertaining to that request 
