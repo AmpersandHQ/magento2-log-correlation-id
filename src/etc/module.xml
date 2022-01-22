@@ -4,6 +4,18 @@
     <module name="Ampersand_LogCorrelationId">
         <sequence>
             <module name="Magento_Backend"/>
+            <!--
+            Third party logger modules bundled with magento listed here
+
+            we don't require them in composer.json as that makes then a hard requirement, if the modules are missing
+            then the di.xml configuration to add the monolog processor won't do anything during the di compilation step
+
+            this allows the dependencies to be loaded in the correct order if they exist
+            -->
+            <module name="Yotpo_Yotpo"/>
+            <module name="Klarna_Core"/>
+            <module name="Dotdigitalgroup_Email"/>
+            <module name="Amazon_Core"/>
         </sequence>
     </module>
 </config>

@@ -78,9 +78,9 @@ $ grep -ri 61e04d741bf78 ./var/log
 
 If the request was long-running, or had an error it may also be flagged in new relic with the custom parameter `amp_correlation_id`
  
-# Configuration and Customisation
+## Configuration and Customisation
 
-## Change the key name from `amp_correlation_id`
+### Change the key name from `amp_correlation_id`
 
 You can change the monolog/new relic key from `amp_correlation_id` using `app/etc/ampersand_magento2_log_correlation/di.xml`
 
@@ -92,7 +92,7 @@ You can change the monolog/new relic key from `amp_correlation_id` using `app/et
 </type>
 ```
 
-## Use existing correlation id from request header
+### Use existing correlation id from request header
 
 If you want to use an upstream correlation/trace ID you can define one `app/etc/ampersand_magento2_log_correlation/di.xml`
 
@@ -116,3 +116,37 @@ $ 2>&1 curl  -H 'X-Your-Header-Here: abc123' https://your-magento-site.example.c
 $ 2>&1 curl https://your-magento-site.example.com/ -vvv | grep "X-Log-Correlation-Id"
 < X-Log-Correlation-Id: cid-61e4194d1bea5
 ```
+
+### Custom Loggers
+
+By default this module hooks into all vanilla magento loggers.
+
+However third party modules may define additional loggers to write to custom files. If you want the correlation ID added to those logs as well you will need to create a module that depends on both `Ampersand_LogCorrelation_Id` and the module with the custom logger, you will then have to add the log handler in `di.xml` like so
+
+```xml
+<type name="This\Is\Some\Logger">
+    <arguments>
+        <argument name="processors" xsi:type="array">
+            <item name="correlationIdProcessor" xsi:type="array">
+                <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                <item name="1" xsi:type="string">addCorrelationId</item>
+            </item>
+        </argument>
+    </arguments>
+</type>
+```
+
+This module provides a command to try to help you keep track of the custom loggers in your system
+
+```shell
+$ php bin/magento ampersand:log-correlation-id:list-custom-loggers
+Scanning for classes which extend Monolog\Logger
+- You need to run 'composer dump-autoload --optimize' for this command to work
+- Use this on your local environment to configure your di.xml
+- See vendor/ampersand/magento2-log-correlation-id/README.md
+--------------------------------------------------------------------------------
+Dotdigitalgroup\Email\Logger\Logger
+StripeIntegration\Payments\Logger\WebhooksLogger
+Yotpo\Yotpo\Model\Logger
+--------------------------------------------------------------------------------
+DONE```
