@@ -48,10 +48,6 @@ class ListCustomLoggersCommandTest extends TestCase
 
     public function testListCustomLoggersCommand()
     {
-        if (getenv('IS_CI_PIPELINE')) {
-            $this->markTestSkipped('Skipping this test as it is in our CI pipeline, so no need to mock anything');
-        }
-
         $command = $this->getMockBuilder(ListCustomLoggersCommand::class)
             ->setConstructorArgs(
                 [
