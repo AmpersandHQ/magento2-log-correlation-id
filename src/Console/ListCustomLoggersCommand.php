@@ -100,7 +100,11 @@ class ListCustomLoggersCommand extends Command
                         try {
                             $result = is_subclass_of($class, MonologLogger::class);
                         } catch (\Throwable $throwable) {
-                            $output->writeln("<error>" . $throwable->getMessage() . "</error>");
+                            $output->writeln(sprintf(
+                                "<error>Failed to scan %s - %s</error>",
+                                str_pad($class, 80, ' '),
+                                $throwable->getMessage()
+                            ));
                             $result = false;
                         }
                         return $result;
