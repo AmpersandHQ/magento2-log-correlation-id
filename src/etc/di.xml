@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <!-- Attach amp_correlation_id to all monolog entries -->
-    <type name="Magento\Framework\Logger\Monolog">
+
+    <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
-            <argument name="processors" xsi:type="array">
-                <item name="correlationIdProcessor" xsi:type="array">
-                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
-                    <item name="1" xsi:type="string">addCorrelationId</item>
-                </item>
+            <argument name="commands" xsi:type="array">
+                <item name="ampersand_log_correlation_id_list_custom_loggers" xsi:type="object">Ampersand\LogCorrelationId\Console\ListCustomLoggersCommand</item>
             </argument>
         </arguments>
     </type>
@@ -26,4 +23,73 @@
     <type name="Magento\Framework\HTTP\PhpEnvironment\Response">
         <plugin name="ampersand_log_correlation_id_response_plugin" type="Ampersand\LogCorrelationId\Plugin\AddToWebApiResponse" sortOrder="1" disabled="false"/>
     </type>
+
+    <!-- Attach amp_correlation_id to all monolog entries -->
+    <type name="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Bundled third party loggers -->
+    <type name="Amazon\Core\Logger\IpnLogger">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Amazon\Core\Logger\Logger">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Dotdigitalgroup\Email\Logger\Logger">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Klarna\Core\Logger\Logger">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Yotpo\Yotpo\Model\Logger">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>
