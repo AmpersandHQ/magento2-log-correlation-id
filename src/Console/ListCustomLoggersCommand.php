@@ -180,6 +180,14 @@ class ListCustomLoggersCommand extends Command
                     unset($classMap[$className]); // Filter out any test framework results
                     continue;
                 }
+                if (strpos($filePath, '/Test/') !== false) {
+                    unset($classMap[$className]); // Filter out any test framework results
+                    continue;
+                }
+                if (strpos($className, '\\Test\\') !== false) {
+                    unset($classMap[$className]); // Filter out any test framework results
+                    continue;
+                }
                 $realPath = realpath($filePath);
                 if (!$realPath) {
                     unset($classMap[$className]); // Could not work out realpath
