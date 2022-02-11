@@ -149,4 +149,5 @@ Dotdigitalgroup\Email\Logger\Logger
 StripeIntegration\Payments\Logger\WebhooksLogger
 Yotpo\Yotpo\Model\Logger
 --------------------------------------------------------------------------------
-DONE```
+DONE
+```
