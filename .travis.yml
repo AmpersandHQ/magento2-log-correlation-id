@@ -56,4 +56,4 @@ after_failure:
     - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log
     - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log && cat ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log
     - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log
-    - sleep 10;
+    - sleep 10; 
