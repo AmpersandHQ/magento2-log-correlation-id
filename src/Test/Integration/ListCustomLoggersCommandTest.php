@@ -33,10 +33,6 @@ class ListCustomLoggersCommandTest extends TestCase
          * Our modules CI pipeline ensures we have composer dump-autoload -o so we should see the bundled loggers
          */
         $this->assertStringContainsString(
-            'Dotdigitalgroup\Email\Logger\Logger',
-            $tester->getDisplay()
-        );
-        $this->assertStringContainsString(
             'Klarna\Core\Logger\Logger',
             $tester->getDisplay()
         );
