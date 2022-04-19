@@ -28,14 +28,6 @@ class ListCustomLoggersCommandTest extends TestCase
 
         $tester = new CommandTester($this->objectManager->create(ListCustomLoggersCommand::class));
         $tester->execute([]);
-
-        /*
-         * Our modules CI pipeline ensures we have composer dump-autoload -o so we should see the bundled loggers
-         */
-        $this->assertStringContainsString(
-            'Klarna\Core\Logger\Logger',
-            $tester->getDisplay()
-        );
     }
 
     public function testListCustomLoggersCommand()
