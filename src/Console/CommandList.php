@@ -41,11 +41,10 @@ class CommandList implements CommandListInterface
     /**
      * Gets list of command instances, can be used without installing the application
      *
-     * @return array<\Symfony\Component\Console\Command\Command>
+     * @return \Symfony\Component\Console\Command\Command[]
      */
     public function getCommands(): array
     {
-        /** @var array<\Symfony\Component\Console\Command\Command> $commands */
         $commands = [];
         foreach ($this->getCommandsClasses() as $class) {
             if (class_exists($class)) {
