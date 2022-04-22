@@ -27,7 +27,27 @@ class ListCustomLoggersCommandTest extends TestCase
         }
 
         $tester = new CommandTester($this->objectManager->create(ListCustomLoggersCommand::class));
-        $tester->execute([]);
+        $this->assertEquals(0, $tester->execute([]));
+
+        if (getenv('magento_latest')) {
+            return; // Magento 2.4.4 has removed a lot of third party bundled modules
+        }
+
+        /*
+         * Our modules CI pipeline ensures we have composer dump-autoload -o so we should see the bundled loggers
+         */
+        $this->assertStringContainsString(
+            'Amazon\Core\Logger\Logger',
+            $tester->getDisplay()
+        );
+        $this->assertStringContainsString(
+            'Dotdigitalgroup\Email\Logger\Logger',
+            $tester->getDisplay()
+        );
+        $this->assertStringContainsString(
+            'Klarna\Core\Logger\Logger',
+            $tester->getDisplay()
+        );
     }
 
     public function testListCustomLoggersCommand()
