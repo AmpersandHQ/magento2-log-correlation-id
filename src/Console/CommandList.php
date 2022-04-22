@@ -39,7 +39,9 @@ class CommandList implements CommandListInterface
     }
 
     /**
-     * @inheritdoc
+     * Gets list of command instances, can be used without installing the application
+     *
+     * @return \Symfony\Component\Console\Command\Command[]
      */
     public function getCommands(): array
     {

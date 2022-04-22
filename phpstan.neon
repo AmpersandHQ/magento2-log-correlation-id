@@ -3,7 +3,7 @@ includes:
 parameters:
     paths:
         - %currentWorkingDirectory%/src
-    excludes_analyse:
+    excludePaths:
         - *Test*
         - *tests*
     level: max
