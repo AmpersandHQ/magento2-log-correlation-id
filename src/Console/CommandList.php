@@ -39,7 +39,9 @@ class CommandList implements CommandListInterface
     }
 
     /**
-     * @inheritdoc
+     * Gets list of command instances, can be used without installing the application
+     *
+     * @return \Symfony\Component\Console\Command\Command[]
      */
     public function getCommands(): array
     {
@@ -51,7 +53,6 @@ class CommandList implements CommandListInterface
                 throw new \RuntimeException('Class ' . $class . ' does not exist');
             }
         }
-
         return $commands;
     }
 }

@@ -118,8 +118,9 @@ class ListCustomLoggersCommand extends Command
                 $extendsMonologLogger = array_merge($extendsMonologLogger, $moduleClassesThatExtendMonologLogger);
             }
 
+            /** @var string[] $filters */
             $filters = $input->getOption(self::INPUT_KEY_FILTER);
-            $extendsMonologLogger = array_diff($extendsMonologLogger, $input->getOption(self::INPUT_KEY_FILTER));
+            $extendsMonologLogger = array_diff($extendsMonologLogger, $filters);
 
             if (!empty($filters) && !empty($extendsMonologLogger)) {
                 /*

@@ -1,12 +1,16 @@
 includes:
     - %currentWorkingDirectory%/vendor/bitexpert/phpstan-magento/extension.neon
 parameters:
+    reportUnmatchedIgnoredErrors: false
     paths:
         - %currentWorkingDirectory%/src
-    excludes_analyse:
+    excludePaths:
         - *Test*
         - *tests*
     level: max
     bootstrapFiles:
         - %currentWorkingDirectory%/vendor/bitexpert/phpstan-magento/autoload.php
     ignoreErrors:
+        -
+            message: '#Method(.*)getCommands(.*)should return(.*)but(.*)#'
+            path: %currentWorkingDirectory%/src/Console/CommandList.php
