@@ -45,6 +45,7 @@ class CommandList implements CommandListInterface
      */
     public function getCommands(): array
     {
+        /** @var \Symfony\Component\Console\Command\Command[] $commands */
         $commands = [];
         foreach ($this->getCommandsClasses() as $class) {
             if (class_exists($class)) {
@@ -53,7 +54,6 @@ class CommandList implements CommandListInterface
                 throw new \RuntimeException('Class ' . $class . ' does not exist');
             }
         }
-
         return $commands;
     }
 }
