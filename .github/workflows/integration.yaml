@@ -31,5 +31,6 @@ jobs:
       package_name: ampersand/magento2-log-correlation-id
       matrix: ${{ needs.compute_matrix.outputs.matrix }}
       test_command: ../../../vendor/bin/phpunit ../../../vendor/ampersand/magento2-log-correlation-id/src/Test/Integration
+      magento_repository: https://repo-magento-mirror.fooman.co.nz/ 
     secrets:
-      composer_auth: ${{ secrets.COMPOSER_AUTH }}
+      composer_auth: '{}'

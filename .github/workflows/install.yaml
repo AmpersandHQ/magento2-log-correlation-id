@@ -37,6 +37,7 @@ jobs:
         composer_version: ${{ matrix.composer }}
         php_version: ${{ matrix.php }}
         magento_version: ${{ matrix.magento }}
-        composer_auth: ${{ secrets.COMPOSER_AUTH }}
+        composer_auth: '{}'
         package_name: ampersand/magento2-log-correlation-id
         source_folder: $GITHUB_WORKSPACE
+        magento_repository: https://repo-magento-mirror.fooman.co.nz/ 

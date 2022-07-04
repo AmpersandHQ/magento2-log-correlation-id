@@ -27,5 +27,6 @@ jobs:
     - uses: graycoreio/github-actions-magento2/unit-test@main
       with:
         php_version: ${{ matrix.php_version }}
-        composer_auth: ${{ secrets.COMPOSER_AUTH }}
+        composer_auth: '{}'
         test_command: composer run test:unit
+        magento_repository: https://repo-magento-mirror.fooman.co.nz/ 
