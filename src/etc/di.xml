@@ -92,4 +92,14 @@
         </arguments>
     </type>
 
-</config>
+    <type name="Magento\AdminAdobeIms\Logger\AdminAdobeImsLogger">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="correlationIdProcessor" xsi:type="array">
+                    <item name="0" xsi:type="object">Ampersand\LogCorrelationId\Processor\MonologCorrelationId</item>
+                    <item name="1" xsi:type="string">addCorrelationId</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+        </config>
