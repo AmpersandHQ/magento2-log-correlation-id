@@ -4,7 +4,7 @@ set_error_handler(function ($severity, $message, $file, $line) {
 });
 
 $magentoPath = getcwd();
-echo "Current working directory" . $magentoPath . PHP_EOL;
+echo "Current working directory " . $magentoPath . PHP_EOL;
 if (isset($argv[1])) {
     $suggestedPath = realpath($argv[1]);
     if ($suggestedPath) {
@@ -30,6 +30,11 @@ $config = new \SimpleXMLElement($configPath, 0, true);
 unset($config->testsuites);
 $testsuiteNode = $config->addChild('testsuites')->addChild('testsuite');
 $testsuiteNode->addAttribute('name', 'Integration');
-$testsuiteNode->addChild('directory', "$travisBuildDir/src/Test/Integration")->addAttribute('suffix', 'Test.php');
+$testsuiteNode->addChild('directory', "$magentoPath/vendor/$packageName/src/Test/Integration")->addAttribute('suffix', 'Test.php');
 
 $config->asXML($configPath);
+
+echo "Definition" . PHP_EOL;
+echo str_pad('', 120, '-') . PHP_EOL;
+echo file_get_contents($configPath) . PHP_EOL;
+echo str_pad('', 120, '-') . PHP_EOL;
