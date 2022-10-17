@@ -62,7 +62,6 @@ script:
     - rm -rf generated
     - composer install
     - php bin/magento
-    - php bin/magento cache:flush
     - php bin/magento module:enable --all
     - php bin/magento setup:di:compile
 
