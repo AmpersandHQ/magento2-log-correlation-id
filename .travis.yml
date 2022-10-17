@@ -63,8 +63,10 @@ script:
     - php bin/magento setup:di:compile
 
 after_failure:
-    - test -d ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/report/ && for r in ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/report/*; do cat $r; done
-    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log
-    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log && cat ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log
-    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log
-    - sleep 10; 
+  - cd ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/
+  - for r in ./var/report/*; do cat $r; done
+  - for l in ./var/log/*;  do cat $l; done
+  - ls -l ./dev/tests/integration/tmp/sandbox*/var
+  - for r in ./dev/tests/integration/tmp/sandbox*/var/report/*; do cat $r; done
+  - for l in ./dev/tests/integration/tmp/sandbox*/var/log/*; do cat $l; done
+  - sleep 10;
