@@ -55,12 +55,15 @@ script:
     - php $TRAVIS_BUILD_DIR/dev/prepare_phpunit_config.php $TRAVIS_BUILD_DIR/vendor/ampersand/travis-vanilla-magento/instances/ampmodule
     - composer install -o
     - IS_CI_PIPELINE=1 vendor/bin/phpunit -c $(pwd)/dev/tests/integration/phpunit.xml.dist --testsuite Integration --debug
-    # Test di compilation
-    - php bin/magento module:enable --all
-    - php bin/magento setup:di:compile
     # Output the custom loggers command filtering out modules we've accounted for
     - if [[ $TEST_GROUP = magento_23 ]];     then php bin/magento ampersand:log-correlation-id:list-custom-loggers --filter "Klarna\Core\Logger\Logger" --filter "Dotdigitalgroup\Email\Logger\Logger" --filter "Amazon\Core\Logger\Logger" --filter "Amazon\Core\Logger\IpnLogger" ; fi
     - if [[ $TEST_GROUP = magento_latest ]]; then php bin/magento ampersand:log-correlation-id:list-custom-loggers --filter "Yotpo\Yotpo\Model\Logger" --filter "Klarna\Core\Logger\Logger" --filter "Dotdigitalgroup\Email\Logger\Logger" --filter "Amazon\Core\Logger\Logger" --filter "Amazon\Core\Logger\IpnLogger" --filter "Magento\AdminAdobeIms\Logger\AdminAdobeImsLogger" ; fi
+    # Test di compilation
+    - rm -rf generated
+    - composer install
+    - php bin/magento cache:flush
+    - php bin/magento module:enable --all
+    - php bin/magento setup:di:compile
 
 after_failure:
   - cd ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/
