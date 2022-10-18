@@ -58,9 +58,17 @@ script:
     # Output the custom loggers command filtering out modules we've accounted for
     - if [[ $TEST_GROUP = magento_23 ]];     then php bin/magento ampersand:log-correlation-id:list-custom-loggers --filter "Klarna\Core\Logger\Logger" --filter "Dotdigitalgroup\Email\Logger\Logger" --filter "Amazon\Core\Logger\Logger" --filter "Amazon\Core\Logger\IpnLogger" ; fi
     - if [[ $TEST_GROUP = magento_latest ]]; then php bin/magento ampersand:log-correlation-id:list-custom-loggers --filter "Yotpo\Yotpo\Model\Logger" --filter "Klarna\Core\Logger\Logger" --filter "Dotdigitalgroup\Email\Logger\Logger" --filter "Amazon\Core\Logger\Logger" --filter "Amazon\Core\Logger\IpnLogger" --filter "Magento\AdminAdobeIms\Logger\AdminAdobeImsLogger" ; fi
+    # Test di compilation
+    - rm -rf generated
+    - composer install
+    - php bin/magento module:enable --all
+    - php bin/magento setup:di:compile
+
 after_failure:
-    - test -d ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/report/ && for r in ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/report/*; do cat $r; done
-    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/system.log
-    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log && cat ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/exception.log
-    - test -f ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log && grep -v "Broken reference" ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/var/log/support_report.log
-    - sleep 10; 
+  - cd ./vendor/ampersand/travis-vanilla-magento/instances/ampmodule/
+  - for r in ./var/report/*; do cat $r; done
+  - for l in ./var/log/*;  do cat $l; done
+  - ls -l ./dev/tests/integration/tmp/sandbox*/var
+  - for r in ./dev/tests/integration/tmp/sandbox*/var/report/*; do cat $r; done
+  - for l in ./dev/tests/integration/tmp/sandbox*/var/log/*; do cat $l; done
+  - sleep 10;
