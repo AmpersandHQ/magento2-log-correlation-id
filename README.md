@@ -51,6 +51,7 @@ This cache decorator initialises the identifier which is immutable for the remai
 - The correlation ID is attached to web responses as `X-Log-Correlation-Id` in `src/HttpResponse/HeaderProvider/LogCorrelationIdHeader.php`
     - REST API requests work a bit differently in Magento and attach the header using `src/Plugin/AddToWebApiResponse.php`
 - Monolog files have the correlation ID added into their context section under the key `amp_correlation_id` via `src/Processor/MonologCorrelationId.php`
+- Magento database logs have this identifier added by `src/Plugin/AddToDatabaseLogs.php`
 - New Relic has this added as a custom parameter under the key `amp_correlation_id`
 
 ## Example usage

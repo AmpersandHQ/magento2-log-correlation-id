@@ -24,6 +24,11 @@
         <plugin name="ampersand_log_correlation_id_response_plugin" type="Ampersand\LogCorrelationId\Plugin\AddToWebApiResponse" sortOrder="1" disabled="false"/>
     </type>
 
+    <!-- Attach X-Log-Correlation-Id to database logs -->
+    <type name="Magento\Framework\DB\LoggerInterface">
+        <plugin name="ampersand_log_correlation_id_db_log_plugin" type="Ampersand\LogCorrelationId\Plugin\AddToDatabaseLogs" sortOrder="1" disabled="false"/>
+    </type>
+
     <!-- Attach amp_correlation_id to all monolog entries -->
     <type name="Magento\Framework\Logger\Monolog">
         <arguments>
