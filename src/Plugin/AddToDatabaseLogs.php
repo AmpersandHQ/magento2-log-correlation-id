@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Plugin;
 
 use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
+use Magento\Framework\DB\LoggerInterface;
 
 class AddToDatabaseLogs
 {
@@ -24,11 +25,11 @@ class AddToDatabaseLogs
     /**
      * Append the log correlation ID to the database log
      *
-     * @param $subject
-     * @param $string
+     * @param LoggerInterface $subject
+     * @param string $string
      * @return string
      */
-    public function beforeLog($subject, $string)
+    public function beforeLog(LoggerInterface $subject, $string)
     {
         $logCorrelationIdString =
             $this->correlationIdentifier->getIdentifierKey() .
