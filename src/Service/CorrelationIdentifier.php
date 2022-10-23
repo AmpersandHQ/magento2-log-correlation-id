@@ -84,10 +84,12 @@ class CorrelationIdentifier
      */
     public function shutDownFunction()
     {
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         if (headers_sent()) {
             return;
         }
 
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         $headerAlreadyDefined = array_filter(headers_list(), function ($header) {
             return (stripos($header, Header::X_LOG_CORRELATION_ID) !== false);
         });
@@ -96,6 +98,7 @@ class CorrelationIdentifier
             return;
         }
 
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         header(Header::X_LOG_CORRELATION_ID . ': ' . $this->getIdentifierValue());
     }
 }
