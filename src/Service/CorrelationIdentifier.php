@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Service;
 
+use Ampersand\LogCorrelationId\HttpResponse\HeaderProvider\LogCorrelationIdHeader as Header;
 use Ampersand\LogCorrelationId\Service\CorrelationIdentifier\Storage;
 use Magento\Framework\App\Request\Http as HttpRequest;
 
@@ -23,6 +24,7 @@ class CorrelationIdentifier
     {
         Storage::setKey($identifierKey);
         $this->headerInput = $headerInput;
+        register_shutdown_function([$this, 'shutDownFunction']);
     }
 
     /**
@@ -69,5 +71,31 @@ class CorrelationIdentifier
     public function getIdentifierKey(): string
     {
         return Storage::getKey();
+    }
+
+    /**
+     * A shutdown function to ensure the correlation ID header is added for every type of erroring request
+     *
+     * This was added to catch "Allowed memory size of X bytes exhausted" type errors
+     *
+     * @see \Magento\Framework\Webapi\ErrorProcessor::registerShutdownFunction
+     *
+     * @return void
+     */
+    public function shutDownFunction()
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        $headerAlreadyDefined = array_filter(headers_list(), function ($header) {
+            return (stripos($header, Header::X_LOG_CORRELATION_ID) !== false);
+        });
+
+        if (!empty($headerAlreadyDefined)) {
+            return;
+        }
+
+        header(Header::X_LOG_CORRELATION_ID . ': ' . $this->getIdentifierValue());
     }
 }
