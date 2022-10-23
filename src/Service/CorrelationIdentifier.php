@@ -24,6 +24,7 @@ class CorrelationIdentifier
     {
         Storage::setKey($identifierKey);
         $this->headerInput = $headerInput;
+        // phpcs:ignore Magento2.Functions.DiscouragedFunction.Discouraged
         register_shutdown_function([$this, 'shutDownFunction']);
     }
 
