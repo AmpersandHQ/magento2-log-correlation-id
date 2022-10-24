@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Ampersand\LogCorrelationId\Test\Unit\Service;
 
+use Ampersand\LogCorrelationId\HttpResponse\HeaderProvider\LogCorrelationIdHeader as Header;
 use Ampersand\LogCorrelationId\Service\CorrelationIdentifier;
 use Magento\Framework\App\Request\Http as HttpRequest;
 use PHPUnit\Framework\TestCase;
@@ -51,6 +52,35 @@ class CorrelationIdentifierTest extends TestCase
             $val1,
             $service2->getIdentifierValue()
         );
+    }
+
+    /**
+     */
+    public function testIdentifierHeaderIsSetOnShutdown()
+    {
+        if (headers_sent($filename, $line)) {
+            $this->markTestSkipped("Skipping test as headers are already set on $filename line $line");
+        }
+        $httpRequest = $this->createMock(HttpRequest::class);
+        $httpRequest->expects($this->any())
+            ->method('getHeader')
+            ->willReturn(false);
+
+        $service = $this->createService();
+        $service->init($httpRequest, true);
+
+        // https://stackoverflow.com/a/39892373/4354325
+        $headerIsNotSet = empty(array_filter(xdebug_get_headers(), function ($header) {
+            return (stripos($header, Header::X_LOG_CORRELATION_ID) !== false);
+        }));
+        $this->assertTrue($headerIsNotSet, 'The correlation header should not yet be set');
+
+        $service->shutDownFunction();
+
+        $headerIsSet = !empty(array_filter(xdebug_get_headers(), function ($header) {
+            return (stripos($header, Header::X_LOG_CORRELATION_ID) !== false);
+        }));
+        $this->assertTrue($headerIsSet, 'The correlation header should be set');
     }
 
     public function testGetIdentifierFromHeader()
