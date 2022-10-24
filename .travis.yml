@@ -30,7 +30,6 @@ cache:
 
 before_install:
     - if [ ! "$TRAVIS_PULL_REQUEST" = "false" ]; then git branch; git branch -D "$TRAVIS_BRANCH" || true; git checkout -b "$TRAVIS_BRANCH"; fi
-    - phpenv config-rm xdebug.ini || true
     - composer self-update --2
 install:
     - export COMPOSER_MEMORY_LIMIT=-1
