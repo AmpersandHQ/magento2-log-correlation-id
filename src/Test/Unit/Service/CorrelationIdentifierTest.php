@@ -58,9 +58,6 @@ class CorrelationIdentifierTest extends TestCase
      */
     public function testIdentifierHeaderIsSetOnShutdown()
     {
-        if (headers_sent($filename, $line)) {
-            $this->markTestSkipped("Skipping test as headers are already set on $filename line $line");
-        }
         $httpRequest = $this->createMock(HttpRequest::class);
         $httpRequest->expects($this->any())
             ->method('getHeader')
