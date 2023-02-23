@@ -64,6 +64,12 @@ LogFormat "%t %U %{amp_correlation_id}n" examplelogformat
 CustomLog "/path/to/var/log/httpd/access_log" examplelogformat
 ```
 
+If you are using Nginx, that's how you can add the correlation id to the access logs
+
+```nginx
+log_format examplelogformat '$time_local  $request $sent_http_x_log_correlation_id'
+```
+
 The above configuration would give log output like the following when viewing a page
 
 ```shell
