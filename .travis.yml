@@ -18,7 +18,7 @@ script:
     - composer run test-static-analysis
     - composer run test:unit
     # Install magento
-    - COMPOSER_AFTER_INSTALL_COMMAND='mkdir -p app/etc/ampersand_magento2_log_correlation; cp /current_extension/dev/ampersand_magento2_log_correlation/di.xml app/etc/ampersand_magento2_log_correlation/ ;' CURRENT_EXTENSION="." vendor/bin/mtest-make $TEST_GROUP
+    - composer run test:integration:install-magento
     # Run integration tests
     - vendor/bin/mtest 'IS_CI_PIPELINE=1 vendor/bin/phpunit -c /var/www/html/dev/tests/integration/phpunit.xml.dist --testsuite Integration --debug'
     # Output the custom loggers command filtering out modules we've accounted for
