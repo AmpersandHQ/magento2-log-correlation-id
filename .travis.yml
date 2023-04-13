@@ -24,7 +24,6 @@ script:
     # Output the custom loggers command filtering out modules we've accounted for
     - if [[ $TEST_GROUP = 2-3-7-p2 ]]; then vendor/bin/mtest 'php bin/magento ampersand:log-correlation-id:list-custom-loggers --filter "Klarna\Core\Logger\Logger" --filter "Dotdigitalgroup\Email\Logger\Logger" --filter "Amazon\Core\Logger\Logger" --filter "Amazon\Core\Logger\IpnLogger"' ; fi
     - if [[ $TEST_GROUP = 2-latest ]]; then vendor/bin/mtest 'php bin/magento ampersand:log-correlation-id:list-custom-loggers --filter "Yotpo\Yotpo\Model\Logger" --filter "Klarna\Core\Logger\Logger" --filter "Dotdigitalgroup\Email\Logger\Logger" --filter "Amazon\Core\Logger\Logger" --filter "Amazon\Core\Logger\IpnLogger" --filter "Magento\AdminAdobeIms\Logger\AdminAdobeImsLogger"' ; fi
-    - false
 
 after_failure:
   - vendor/bin/mtest 'cat /var/www/html/var/log/*.log'
