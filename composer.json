@@ -43,10 +43,13 @@
         "test": [
             "@test-static-analysis",
             "@test:unit"
+        ],
+        "test:integration:install-magento": [
+            "COMPOSER_AFTER_INSTALL_COMMAND='mkdir -p app/etc/ampersand_magento2_log_correlation; cp /current_extension/dev/ampersand_magento2_log_correlation/di.xml app/etc/ampersand_magento2_log_correlation/ ; composer dump-autoload --optimize ;' CURRENT_EXTENSION=\".\" vendor/bin/mtest-make $TEST_GROUP"
         ]
     },
     "require-dev": {
-        "ampersand/travis-vanilla-magento": "^1.1",
+        "ampersand/magento-docker-test-instance": "^0.1",
         "bitexpert/phpstan-magento": "^0.11",
         "friendsofphp/php-cs-fixer": "^3.4",
         "magento/magento-coding-standard": "^15",
