@@ -49,7 +49,7 @@
         ]
     },
     "require-dev": {
-        "ampersand/magento-docker-test-instance": "^0.1",
+        "ampersand/magento-docker-test-instance": "dev-convenient-patch-1",
         "bitexpert/phpstan-magento": "^0.11",
         "friendsofphp/php-cs-fixer": "^3.4",
         "magento/magento-coding-standard": "^15",
