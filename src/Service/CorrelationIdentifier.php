@@ -42,7 +42,7 @@ class CorrelationIdentifier
      */
     public function init(HttpRequest $request, bool $force = false)
     {
-        $identifier = uniqid('cid-');
+        $identifier = str_replace('.', '', uniqid('cid-', true));
 
         if (is_string($this->headerInput) && strlen($this->headerInput)) {
             $idFromHeader = $request->getHeader($this->headerInput);
