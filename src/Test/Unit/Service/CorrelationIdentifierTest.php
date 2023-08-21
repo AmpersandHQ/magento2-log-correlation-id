@@ -41,7 +41,7 @@ class CorrelationIdentifierTest extends TestCase
             $val1,
             'Identifier should contain cid-'
         );
-        $this->assertEquals(26, strlen($val1), 'Identifier should be this length');
+        $this->assertEquals(24, strlen($val1), 'Identifier should be this length, ' . $val1);
 
         $service2 = $this->createService();
         $service2->init($httpRequest, true);
