@@ -48,5 +48,34 @@ class CorrelationIdDecorator extends Bare
                 $correlationIdentifier->getIdentifierValue()
             );
         }
+
+        // phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
+        @$this->setCliProcessTitle($correlationIdentifier);
+    }
+
+    /**
+     * Set the CLI process title, where possible depending on OS
+     *
+     * @param CorrelationIdentifier $correlationIdentifier
+     * @link https://github.com/php/php-src/issues/11246
+     * @return void
+     */
+    private function setCliProcessTitle(CorrelationIdentifier $correlationIdentifier)
+    {
+        try {
+            if (php_sapi_name() !== 'cli') {
+                return;
+            }
+            $processTitle = cli_get_process_title();
+            if (!is_string($processTitle)) {
+                return;
+            }
+            if (stripos($processTitle, $correlationIdentifier->getIdentifierValue()) !== false) {
+                return;
+            }
+            cli_set_process_title($processTitle . ' ' . $correlationIdentifier->getIdentifierValue());
+            // phpcs:ignore Magento2.CodeAnalysis.EmptyBlock.DetectedCatch
+        } catch (\Throwable $throwable) {
+        }
     }
 }
