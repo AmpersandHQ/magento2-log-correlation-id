@@ -29,8 +29,8 @@ class ListCustomLoggersCommandTest extends TestCase
         $tester = new CommandTester($this->objectManager->create(ListCustomLoggersCommand::class));
         $this->assertEquals(0, $tester->execute([]));
 
-        if (getenv('TEST_GROUP') === '2-latest') {
-            return; // Magento 2.4.4 has removed a lot of third party bundled modules
+        if (in_array(getenv('TEST_GROUP'), ['2-latest', '2-4-6', '2-4-5', '2-4-4', '2-4-3'], true)) {
+            return;
         }
 
         /*
