@@ -62,7 +62,18 @@ class AddToDatabaseQueries
         if (!(isset($this->adapter) && $this->adapter instanceof Mysql)) {
             return;
         }
-        //TODO make sure this is not vulnerable to SQL injection as it gets concatenated at the end of the query
-        $sql .= $this->adapter->quoteInto(' /* ? */ ', $this->correlationIdentifier->getIdentifierValue());
+        /**
+         * @link https://github.com/google/sqlcommenter/blob/c447d218a1b8ff628571b22cf4e74f2a6fe2e38a/php/sqlcommenter-php/packages/sqlcommenter-laravel/src/Utils.php#L28-L47
+         * @link https://google.github.io/sqlcommenter/spec/#value-serialization
+         *
+         * 1. Url encode the value
+         *     1a. Double encode %, see code comment above
+         * 2. Escape meta chars (inside quoteInto it calls addcslashes)
+         * 3. Escape the value by putting in single quotes (part of quoteInto)
+         */
+        $sql .= $this->adapter->quoteInto(
+            ' /* ? */ ',
+            str_replace('%', '%%', rawurlencode($this->correlationIdentifier->getIdentifierValue()))
+        );
     }
 }
