@@ -6,7 +6,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "magento/*": true
-        }
+        },
+        "process-timeout": 1200
     },
     "repositories": [
         {
