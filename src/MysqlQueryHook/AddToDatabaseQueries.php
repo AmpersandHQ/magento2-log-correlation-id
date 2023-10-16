@@ -56,12 +56,15 @@ class AddToDatabaseQueries
         if (!strlen($sql)) {
             return;
         }
-        if (strpos($sql, $this->correlationIdentifier->getIdentifierValue()) !== false) {
-            return; // double check we've not already added it
-        }
         if (!(isset($this->adapter) && $this->adapter instanceof Mysql)) {
             return;
         }
+
+        $identifier = $this->correlationIdentifier->getIdentifierValue();
+        if (!strlen($identifier)) {
+            return;
+        }
+
         /**
          * @link https://github.com/google/sqlcommenter/blob/c447d218a1b8ff628571b22cf4e74f2a6fe2e38a/php/sqlcommenter-php/packages/sqlcommenter-laravel/src/Utils.php#L28-L47
          * @link https://google.github.io/sqlcommenter/spec/#value-serialization
@@ -71,9 +74,17 @@ class AddToDatabaseQueries
          * 2. Escape meta chars (inside quoteInto it calls addcslashes)
          * 3. Escape the value by putting in single quotes (part of quoteInto)
          */
-        $sql .= $this->adapter->quoteInto(
+        $identifier = $this->adapter->quoteInto(
             ' /* ? */ ',
-            str_replace('%', '%%', rawurlencode($this->correlationIdentifier->getIdentifierValue()))
+            str_replace('%', '%%', rawurlencode($identifier))
         );
+
+        if (strpos($sql, $identifier) !== false) {
+            return; // double check we've not already added it
+        }
+
+        if (strlen($identifier) <= 128 && preg_match('/^[a-zA-Z0-9_.~-]*$/', $identifier)) {
+            $sql .= $identifier;
+        }
     }
 }
