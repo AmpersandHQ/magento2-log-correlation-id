@@ -61,7 +61,7 @@ class AddToDatabaseQueries
         }
 
         $identifier = $this->correlationIdentifier->getIdentifierValue();
-        if (!strlen($identifier)) {
+        if (strlen($identifier) <= 0 || strlen($identifier) >= 128) {
             return;
         }
 
@@ -74,17 +74,16 @@ class AddToDatabaseQueries
          * 2. Escape meta chars (inside quoteInto it calls addcslashes)
          * 3. Escape the value by putting in single quotes (part of quoteInto)
          */
-        $identifier = $this->adapter->quoteInto(
-            ' /* ? */ ',
-            str_replace('%', '%%', rawurlencode($identifier))
-        );
+        $identifier = str_replace('%', '%%', rawurlencode($identifier));
+        if (!preg_match('/^[a-zA-Z0-9_.~%-]*$/', $identifier)) {
+            return;
+        }
 
+        $identifier = $this->adapter->quoteInto(' /* ? */ ', $identifier);
         if (strpos($sql, $identifier) !== false) {
             return; // double check we've not already added it
         }
 
-        if (strlen($identifier) <= 128 && preg_match('/^[a-zA-Z0-9_.~-]*$/', $identifier)) {
-            $sql .= $identifier;
-        }
+        $sql .= $identifier;
     }
 }
