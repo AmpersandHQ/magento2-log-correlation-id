@@ -75,6 +75,18 @@ class AddToDatabaseQueries
          * 3. Escape the value by putting in single quotes (part of quoteInto)
          */
         $identifier = str_replace('%', '%%', rawurlencode($identifier));
+        /**
+         * An additional paranoid check to remove all multiple concurrent usages of a hyphen
+         * This is a comment format in MySQL
+         *
+         * The other format of comment / * Like this * / is handled by the rawurlencode and will be like %2A%2F
+         *
+         * With both these changes, breaking out from the hardcoded comment below should not be possible.
+         */
+        $identifier = preg_replace('/-+/', '-', $identifier);
+        if (!is_string($identifier)) {
+            return;
+        }
         if (!preg_match('/^[a-zA-Z0-9_.~%-]*$/', $identifier)) {
             return;
         }
