@@ -28,6 +28,8 @@ Run module installation
 php bin/magento setup:upgrade
 ```
 
+# todo enable mysql query correlation ids
+
 ## Uninstall
 
 ```bash
@@ -53,6 +55,7 @@ This cache decorator initialises the identifier which is immutable for the remai
 - Monolog files have the correlation ID added into their context section under the key `amp_correlation_id` via `src/Processor/MonologCorrelationId.php`
 - Magento database logs have this identifier added by `src/Plugin/AddToDatabaseLogs.php`
 - New Relic has this added as a custom parameter under the key `amp_correlation_id`
+- TODO mysql and CLI
 
 ## Example usage
 

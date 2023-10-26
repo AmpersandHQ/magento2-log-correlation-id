@@ -41,6 +41,6 @@
 
     <!-- Make this plugin disabled by default, full definition inside the module etc/di.xml-->
     <type name="Magento\Framework\App\ResourceConnection">
-        <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="true" />
+        <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="false" />
     </type>
 </config>

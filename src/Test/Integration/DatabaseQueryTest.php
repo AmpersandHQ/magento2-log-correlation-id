@@ -74,6 +74,7 @@ class DatabaseQueryTest extends TestCase
         $identifier = Bootstrap::getObjectManager()->get(CorrelationIdentifier::class)->getIdentifierValue();
 
         $line = $this->getLineFromLog($query);
+        $this->assertStringContainsString('cid-', $identifier, 'the test is not a basic cid');
         $this->assertStringContainsString($query, $line);
         $this->assertStringContainsString(" /* '$identifier' */ ", $line);
         $this->setDatabaseLoggingAlias('disabled');
