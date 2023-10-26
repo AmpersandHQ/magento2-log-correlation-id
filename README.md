@@ -98,10 +98,11 @@ If the request was long-running, or had an error it may also be flagged in new r
 
 Inside `app/etc/ampersand_magento2_log_correlation/di.xml`  you can change to `disabled="false"`
 
-```xml
-    <type name="Magento\Framework\App\ResourceConnection">
-    <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="false" />
-</type>
+```diff
+  <type name="Magento\Framework\App\ResourceConnection">
+-     <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="true" />
++     <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="false" />
+  </type>
 ```
 
 This will add the correlation identifier to all queries like `SELECT store_group.* FROM store_group /* 'cid-652918943af7b811319570' */ `
