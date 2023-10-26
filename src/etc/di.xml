@@ -30,7 +30,6 @@
     </type>
 
     <!-- Attach log correlation id to database queries as a comment -->
-    <!-- TODO Make this disabled by default -->
     <type name="Magento\Framework\App\ResourceConnection">
         <plugin name="ampersand_log_correlation_id_db_query_plugin" type="Ampersand\LogCorrelationId\Plugin\AddToDatabaseQueries" sortOrder="99" />
     </type>
