@@ -23,6 +23,11 @@ mkdir app/etc/ampersand_magento2_log_correlation
 cp vendor/ampersand/magento2-log-correlation-id/dev/ampersand_magento2_log_correlation/di.xml app/etc/ampersand_magento2_log_correlation/
 ```
 
+At this point you can make any configuration changes
+- [Add identifier to MySQL queries (disabled by default)](#add-identifier-to-mysql-queries)
+- [Change the key name from `amp_correlation_id`](#change-the-key-name-from-amp_correlation_id)
+- [Use existing correlation id from request header](#use-existing-correlation-id-from-request-header)
+
 Run module installation
 ```bash
 php bin/magento setup:upgrade
@@ -53,6 +58,8 @@ This cache decorator initialises the identifier which is immutable for the remai
 - Monolog files have the correlation ID added into their context section under the key `amp_correlation_id` via `src/Processor/MonologCorrelationId.php`
 - Magento database logs have this identifier added by `src/Plugin/AddToDatabaseLogs.php`
 - New Relic has this added as a custom parameter under the key `amp_correlation_id`
+- CLI processes have it added as their "title" by using `cli_set_process_title` via `Ampersand\LogCorrelationId\CacheDecorator\CorrelationIdDecorator::setCliProcessTitle`
+- MySQL queries have it added as a comment at the end of the query via `Ampersand\LogCorrelationId\Plugin\AddToDatabaseQueries::afterGetConnection`
 
 ## Example usage
 
@@ -86,6 +93,19 @@ $ grep -ri 61e04d741bf78 ./var/log
 If the request was long-running, or had an error it may also be flagged in new relic with the custom parameter `amp_correlation_id`
  
 ## Configuration and Customisation
+
+### Add identifier to MySQL queries 
+
+Inside `app/etc/ampersand_magento2_log_correlation/di.xml`  you can change to `disabled="false"`
+
+```diff
+  <type name="Magento\Framework\App\ResourceConnection">
+-     <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="true" />
++     <plugin name="ampersand_log_correlation_id_db_query_plugin" disabled="false" />
+  </type>
+```
+
+This will add the correlation identifier to all queries like `SELECT store_group.* FROM store_group /* 'cid-652918943af7b811319570' */ `
 
 ### Change the key name from `amp_correlation_id`
 

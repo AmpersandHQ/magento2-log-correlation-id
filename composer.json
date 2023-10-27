@@ -46,7 +46,7 @@
             "@test:unit"
         ],
         "test:integration:install-magento": [
-            "COMPOSER_AFTER_INSTALL_COMMAND='mkdir -p app/etc/ampersand_magento2_log_correlation; cp /current_extension/dev/ampersand_magento2_log_correlation/di.xml app/etc/ampersand_magento2_log_correlation/ ; composer dump-autoload --optimize ;' CURRENT_EXTENSION=\".\" vendor/bin/mtest-make $TEST_GROUP"
+            "COMPOSER_AFTER_INSTALL_COMMAND='mkdir -p app/etc/ampersand_magento2_log_correlation; cp /current_extension/dev/ampersand_magento2_log_correlation/di_integration_test_suite.xml app/etc/ampersand_magento2_log_correlation/di.xml ; composer dump-autoload --optimize ;' CURRENT_EXTENSION=\".\" vendor/bin/mtest-make $TEST_GROUP"
         ]
     },
     "require-dev": {
