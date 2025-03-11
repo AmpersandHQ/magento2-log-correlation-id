@@ -19,7 +19,8 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.3.0",
-        "magento/framework": "*"
+        "magento/framework": "*",
+        "monolog/monolog": "^3.6"
     },
     "autoload": {
         "files": [
